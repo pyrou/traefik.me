@@ -24,7 +24,7 @@ Using traefik.me,
 development web server from devices on your local network, like iPads, iPhones,
 and other computers. No configuration required!
 
-Alternatively, traefik works with dashes, and provide a default resolving to
+Alternatively, traefik works with dashes, and provides a default resolving to
 127.0.0.1, pretty handy in a local configuration:
 
 ```
