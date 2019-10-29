@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pyrou/traefik.me.svg?branch=master)](https://travis-ci.org/pyrou/traefik.me)
+
 ```
            888                              .d888 d8b 888
            888                             d88P"  Y8P 888
