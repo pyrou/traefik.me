@@ -1,0 +1,156 @@
+<html>
+<head>
+  <title>traefik.me</title>
+  <meta property="og:image" content="/preview.png" />
+  <style>
+html {
+  background: #234;
+}
+
+body {
+  color: #bbb;
+  width: 660px;
+  margin: 50px auto;
+  padding:20px;
+
+  font-family: Courier New, Courier, monospace;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 16px;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+@media screen and (max-device-width: 660px) {
+  body {
+    margin: 0 0 50px 0;
+  }
+}
+
+header { color: #eff; }
+a { color: #ccf; }
+a:hover {
+  background: #ccf;
+  color: #111;
+  text-decoration: none;
+}
+pre code {padding-left:8ex; display:block}
+section strong { color: #fff; }
+</style>
+</head><body><pre>
+  <header>
+888                              .d888 d8b 888
+888                             d88P"  Y8P 888
+888                             888        888
+888888 https://8888b.   .d88b.  888888 888 888  888     88888b.d88b.   .d88b.
+888    888P"      "88b d8P  Y8b 888    888 888 .88P     888 "888 "88b d8P  Y8b
+888    888    .d888888 88888888 888    888 888888K      888  888  888 88888888
+Y88b.  888    888  888 Y8b.     888    888 888 "88b d8b 888  888  888 Y8b.
+ "Y888 888    "Y888888  "Y8888  888    888 888  888 Y8P 888  888  888  "Y8888
+</header>
+</pre>
+
+<section><pre>
+<strong>What is traefik.me?</strong>
+Just like nip.io or xip.io, traefik.me is a magic domain name that provides
+wildcard DNS for any IP address. Say your LAN IP address is <strong>10.0.0.1</strong>.
+Using traefik.me,
+
+                 <strong>10.0.0.1</strong>.traefik.me   resolves to   10.0.0.1
+             www.<strong>10.0.0.1</strong>.traefik.me   resolves to   10.0.0.1
+  <span id="domain1">        mysite</span>.<strong>10.0.0.1</strong>.traefik.me   resolves to   10.0.0.1
+  <span id="domain2">       foo.bar</span>.<strong><span class="ip1">10.0.0.1</span></strong>.traefik.me   resolves to   <span class="ip1">10.0.0.1</span>
+
+...and so on. You can use these domains to access virtual hosts on your
+development web server from devices on your local network, like iPads, iPhones,
+and other computers. No configuration required!
+
+Alternatively, traefik works with dashes, and provide a default resolving to
+127.0.0.1, pretty handy in a local configuration:
+
+                 <strong>10-0-0-1</strong>.traefik.me   resolves to   10.0.0.1
+             www-<strong>10-0-0-1</strong>.traefik.me   resolves to   10.0.0.1
+                   mysite.traefik.me   resolves to   127.0.0.1
+                  foo.bar.traefik.me   resolves to   127.0.0.1
+
+</pre></section>
+
+<section><pre>
+<strong>How does it work?</strong>
+traefik.me runs a <a href="https://github.com/exentriquesolutions/nip.io">custom DNS server</a> on the public Internet.
+When your computer looks up a traefik.me domain, the traefik.me DNS server
+extracts the IP address from the domain and sends it back in the response.
+</pre></section>
+
+<section><pre><strong>HTTPS support!</strong>
+Thanks to Let's encrypt, a wildcard certificate is available for *.traefik.me.
+Just grab the files here:
+
+           -rw-r--r-- 1 root root 1919 Oct 26 21:40 <a href="/cert.pem">cert.pem</a>
+           -rw-r--r-- 1 root root 1647 Oct 26 21:40 <a href="/chain.pem">chain.pem</a>
+           -rw-r--r-- 1 root root 3566 Oct 26 21:40 <a href="/fullchain.pem">fullchain.pem</a>
+           -rw-r--r-- 1 root root 1704 Oct 26 21:40 <a href="/privkey.pem">privkey.pem</a>
+
+As wildcard certificates are only valid for one level depth subdomains, use the
+dashed-form subdomain instead of dots. Certificates are regenerated every 60 days.
+</pre></<section>
+
+<section><pre>
+<strong>Ok but why "traefik"?</strong>
+The name comes from <a href="http://traefik.io">traefik.io</a>, that is an open-source reverse proxy and load
+balancer. Used in conjonction with docker, it becomes very handy for local web
+development. Here is a typical <strong>docker-compose.yml</strong> file you might produce:
+
+<code>version: '3'
+services:
+  traefik:
+    restart: unless-stopped
+    image: traefik:v2.0.2
+    command: --providers.docker=true
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  app1:
+    image: containous/whoami
+    labels:
+      - "traefik.http.routers.app1.rule=Host(`app1.traefik.me`)"
+  app2:
+    image: containous/whoami
+    labels:
+      - "traefik.http.routers.app2.rule=Host(`app2.traefik.me`)"</code>
+
+Launch it with <strong>docker-compose up</strong>. Open your browser, and visit app1.traefik.me
+or app2.traefik.me. It just works as expected out of the box, without additional
+configuration or /etc/hosts tuning.
+
+To reach the container from another device on your local network, use the
+following docker label :
+
+    - "traefik.http.routers.app1.rule=HostRegexp(`app1.{ip:.*}.traefik.me`)"
+
+Say your LAN IP address is <strong>10.0.0.1</strong>, visiting http://app1.<strong>10.0.0.1</strong>.traefik.me
+from any device on your local network will reach your app1 docker container.
+</pre></section>
+
+
+
+<section><pre>
+<strong>Copyright</strong>
+Kudos to <a href="http://xip.io">xip.io</a> for the inspiration of the present website, <a href="http://nip.io">nip.io</a> for the dns
+server.
+
+
+                    Get in touch with me on <a href="//twitter.com/pyrou">twitter</a> or <a href="//github.com/pyrou">github</a>
+</pre>
+</section>
+<script>
+window.setInterval(function(){
+  function rand255(){ return Math.floor(Math.random()*255) }
+  var ip = [rand255(),rand255(),rand255(),rand255()].join('.');
+  document.getElementById('domain2').innerText = ' '.repeat(15-(ip.length))+'foo.bar';
+  document.getElementsByClassName('ip1')[0].innerText=document.getElementsByClassName('ip1')[1].innerText=ip
+}, 2500);
+</script>
+</body>
+</html>
