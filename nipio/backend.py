@@ -62,6 +62,7 @@ class DynamicBackend:
         self.ip_address = ''
         self.ttl = ''
         self.name_servers = {}
+        self.static = {}
         self.blacklisted_ips = []
         self.acmechallenge = ''
 
@@ -84,12 +85,15 @@ class DynamicBackend:
 
         for entry in config.items('nameservers'):
             self.name_servers[entry[0]] = entry[1]
+        for entry in config.items('static'):
+            self.static[entry[0]] = entry[1]
 
         if config.has_section("blacklist"):
             for entry in config.items("blacklist"):
                 self.blacklisted_ips.append(entry[1])
 
         _log('Name servers: %s' % self.name_servers)
+        _log('Static resolution: %s' % self.static)
         _log('ID: %s' % self.id)
         _log('TTL %s' % self.ttl)
         _log('SOA: %s' % self.soa)
@@ -125,7 +129,9 @@ class DynamicBackend:
             qtype = cmd[3]
 
             if (qtype == 'A' or qtype == 'ANY') and qname.endswith(self.domain):
-                if qname == self.domain:
+                if qname in self.static:
+                    self.handle_static(qname)
+                elif qname == self.domain:
                     self.handle_self(self.domain)
                 elif qname in self.name_servers:
                     self.handle_nameservers(qname)
@@ -144,6 +150,12 @@ class DynamicBackend:
         _write('DATA', name, 'IN', 'A', self.ttl, self.id, self.ip_address)
         _write('DATA', name, 'IN', 'TXT', self.ttl, self.id, self.acme_challenge)
         self.write_name_servers(name)
+        _write('END')
+
+    def handle_static(self, qname):
+        ip = self.static[qname]
+        _write('DATA', qname, 'IN', 'A', self.ttl, self.id, ip)
+        self.write_name_servers(qname)
         _write('END')
 
     def handle_self(self, name):
