@@ -63,6 +63,7 @@ class DynamicBackend:
         self.ttl = ''
         self.name_servers = {}
         self.blacklisted_ips = []
+        self.acmechallenge = ''
 
     def configure(self):
         fname = self._get_config_filename()
@@ -79,6 +80,7 @@ class DynamicBackend:
         self.domain = config.get('main', 'domain')
         self.ip_address = config.get('main', 'ipaddress')
         self.ttl = config.get('main', 'ttl')
+        self.acme_challenge = config.get('acme', 'challenge')
 
         for entry in config.items('nameservers'):
             self.name_servers[entry[0]] = entry[1]
@@ -94,6 +96,7 @@ class DynamicBackend:
         _log('IP Address: %s' % self.ip_address)
         _log('DOMAIN: %s' % self.domain)
         _log("Blacklist: %s" % self.blacklisted_ips)
+        _log('ACME challenge: %s' % self.acme_challenge)
 
     def run(self):
         _log('starting up')
@@ -126,12 +129,22 @@ class DynamicBackend:
                     self.handle_self(self.domain)
                 elif qname in self.name_servers:
                     self.handle_nameservers(qname)
+                elif qname == '_acme-challenge.' + self.domain:
+                    self.handle_acme(qname)
                 else:
                     self.handle_subdomains(qname)
             elif qtype == 'SOA' and qname.endswith(self.domain):
                 self.handle_soa(qname)
+            elif qtype == 'TXT' and qname == '_acme-challenge.' + self.domain:
+                self.handle_acme(qname)
             else:
                 self.handle_unknown(qtype, qname)
+
+    def handle_acme(self, name):
+        _write('DATA', name, 'IN', 'A', self.ttl, self.id, self.ip_address)
+        _write('DATA', name, 'IN', 'TXT', self.ttl, self.id, self.acme_challenge)
+        self.write_name_servers(name)
+        _write('END')
 
     def handle_self(self, name):
         _write('DATA', name, 'IN', 'A', self.ttl, self.id, self.ip_address)
