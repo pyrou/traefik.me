@@ -82,19 +82,6 @@ When your computer looks up a traefik.me domain, the traefik.me DNS server
 extracts the IP address from the domain and sends it back in the response.
 </pre></section>
 
-<section><pre><strong>HTTPS support!</strong>
-Thanks to Let's encrypt, a wildcard certificate is available for *.traefik.me.
-Just grab the files here:
-
-           -rw-r--r-- 1 root root 1919 Oct 26 21:40 <a href="/cert.pem">cert.pem</a>
-           -rw-r--r-- 1 root root 1647 Oct 26 21:40 <a href="/chain.pem">chain.pem</a>
-           -rw-r--r-- 1 root root 3566 Oct 26 21:40 <a href="/fullchain.pem">fullchain.pem</a>
-           -rw-r--r-- 1 root root 1704 Oct 26 21:40 <a href="/privkey.pem">privkey.pem</a>
-
-As wildcard certificates are only valid for one level depth subdomains, use the
-dashed-form subdomain instead of dots. Certificates are regenerated every 60 days.
-</pre></<section>
-
 <section><pre>
 <strong>Ok but why "traefik"?</strong>
 The name comes from <a href="http://traefik.io">traefik.io</a>, that is an open-source reverse proxy and load
