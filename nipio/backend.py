@@ -64,7 +64,7 @@ class DynamicBackend:
         self.name_servers = {}
         self.static = {}
         self.blacklisted_ips = []
-        self.acme_challenge = ''
+        self.acme_challenge = []
 
     def configure(self):
         fname = self._get_config_filename()
@@ -82,7 +82,8 @@ class DynamicBackend:
         self.ip_address = config.get('main', 'ipaddress')
         self.ttl = config.get('main', 'ttl')
         if config.has_section("acme"):
-            self.acme_challenge = config.get('acme', 'challenge')
+            for entry in config.items("acme"):
+                self.acme_challenge.append(entry[1])
 
         for entry in config.items('nameservers'):
             self.name_servers[entry[0]] = entry[1]
@@ -149,23 +150,39 @@ class DynamicBackend:
                 self.handle_unknown(qtype, qname)
 
     def handle_acme(self, name):
+        if _is_debug():
+            _log("handle acme: %s" % name)
         _write('DATA', name, 'IN', 'A', self.ttl, self.id, self.ip_address)
-        _write('DATA', name, 'IN', 'TXT', self.ttl, self.id, self.acme_challenge)
+        for challenge in self.acme_challenge:
+            _write('DATA', name, 'IN', 'TXT', self.ttl, self.id, challenge)
         self.write_name_servers(name)
         _write('END')
 
     def handle_static(self, qname):
+        if _is_debug():
+            _log("handle static: %s" % qname)
         ip = self.static[qname]
         _write('DATA', qname, 'IN', 'A', self.ttl, self.id, ip)
         self.write_name_servers(qname)
         _write('END')
 
     def handle_self(self, name):
+        if _is_debug():
+            _log("handle self: %s" % name)
         _write('DATA', name, 'IN', 'A', self.ttl, self.id, self.ip_address)
         self.write_name_servers(name)
         _write('END')
+    def is_valid_ip(self, ip_address_parts):
+        for part in ip_address_parts:
+            if re.match('^\d{1,3}$', part) is None:
+                return False
+            part_int = int(part)
+            if part_int < 0 or part_int > 255:
+                return False
+        return True
 
     def handle_subdomains(self, qname):
+        _log('resolve: %s' % qname)
         subdomain = qname[0:qname.find(self.domain) - 1]
 
         subparts = self._split_subdomain(subdomain)
@@ -175,21 +192,20 @@ class DynamicBackend:
             self.handle_self(qname)
             return
 
-        ip_address_parts = subparts[-4:]
+        ip_address_parts = None
+
+        if len(subparts) >= 4 and self.is_valid_ip(subparts[:4]):
+            ip_address_parts = subparts[:4]
+        elif len(subparts) >= 4 and self.is_valid_ip(subparts[-4:]):
+            ip_address_parts = subparts[-4:]
+        else:
+            if _is_debug():
+                _log('No valid IP found in: %s' % subparts)
+            self.handle_self(qname)
+            return
+
         if _is_debug():
             _log('ip: %s' % ip_address_parts)
-        for part in ip_address_parts:
-            if re.match('^\d{1,3}$', part) is None:
-                if _is_debug():
-                    _log('%s is not a number' % part)
-                self.handle_self(qname)
-                return
-            part_int = int(part)
-            if part_int < 0 or part_int > 255:
-                if _is_debug():
-                    _log('%d is too big/small' % part_int)
-                self.handle_self(qname)
-                return
 
         ip_address = ".".join(ip_address_parts)
         if ip_address in self.blacklisted_ips:
@@ -201,6 +217,8 @@ class DynamicBackend:
         _write('END')
 
     def handle_nameservers(self, qname):
+        if _is_debug():
+            _log("handle nameservers: %s" % qname)
         ip = self.name_servers[qname]
         _write('DATA', qname, 'IN', 'A', self.ttl, self.id, ip)
         _write('END')
@@ -210,6 +228,8 @@ class DynamicBackend:
             _write('DATA', qname, 'IN', 'NS', self.ttl, self.id, nameServer)
 
     def handle_soa(self, qname):
+        if _is_debug():
+            _log("handle soa: %s" % qname)
         _write('DATA', qname, 'IN', 'SOA', self.ttl, self.id, self.soa)
         _write('END')
 
