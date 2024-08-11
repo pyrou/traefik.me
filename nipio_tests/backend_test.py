@@ -76,6 +76,17 @@ class DynamicBackendTest(unittest.TestCase):
             ["DATA", "subdomain.127.0.0.1.lcl.io", "IN", "NS", "200", "22", "ns2.lcl.io"],
         )
 
+    def test_backend_responds_to_A_request_with_valid_ip_prefix(self):
+        self._send_commands(["Q", "127.0.0.1.subdomain.lcl.io", "IN", "A", "1", "127.0.0.1"])
+
+        self._run_backend()
+
+        self._assert_expected_responses(
+            ["DATA", "127.0.0.1.subdomain.lcl.io", "IN", "A", "200", "22", "127.0.0.1"],
+            ["DATA", "127.0.0.1.subdomain.lcl.io", "IN", "NS", "200", "22", "ns1.lcl.io"],
+            ["DATA", "127.0.0.1.subdomain.lcl.io", "IN", "NS", "200", "22", "ns2.lcl.io"],
+        )
+
     def test_backend_responds_to_ANY_request_with_valid_ip_separated_by_dashes(self):
         self._send_commands(["Q", "subdomain-127-0-0-1.lcl.io", "IN", "ANY", "1", "127.0.0.1"])
 

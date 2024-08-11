@@ -9,3 +9,4 @@ dist
 .idea/*.xml
 .idea/inspectionProfiles
 
+__pycache__
