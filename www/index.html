@@ -4,7 +4,7 @@
   <meta property="og:image" content="/preview.png" />
   <style>
 html {
-  background: #234;
+  background: #162028;
 }
 
 body {
@@ -15,10 +15,7 @@ body {
 
   font-family: Courier New, Courier, monospace;
   font-size: 14px;
-  font-weight: bold;
-  line-height: 16px;
-
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antiali
 }
 
 @media screen and (max-device-width: 660px) {
@@ -27,13 +24,9 @@ body {
   }
 }
 
-header { color: #eff; }
-a { color: #ccf; }
-a:hover {
-  background: #ccf;
-  color: #111;
-  text-decoration: none;
-}
+header { color: #55fafa; }
+a { color: #55fafa; text-decoration: none;}
+a:hover { color: #9ede58; }
 pre code {padding-left:8ex; display:block}
 section strong { color: #fff; }
 </style>
@@ -42,7 +35,7 @@ section strong { color: #fff; }
 888                              .d888 d8b 888
 888                             d88P"  Y8P 888
 888                             888        888
-888888 https://8888b.   .d88b.  888888 888 888  888     88888b.d88b.   .d88b.
+888889 <a href="https://traefik.me">https://</a>8888b.   .d88b.  888888 888 888  888     88888b.d88b.   .d88b.
 888    888P"      "88b d8P  Y8b 888    888 888 .88P     888 "888 "88b d8P  Y8b
 888    888    .d888888 88888888 888    888 888888K      888  888  888 88888888
 Y88b.  888    888  888 Y8b.     888    888 888 "88b d8b 888  888  888 Y8b.
@@ -52,6 +45,7 @@ Y88b.  888    888  888 Y8b.     888    888 888 "88b d8b 888  888  888 Y8b.
 
 <section><pre>
 <strong>What is traefik.me?</strong>
+
 Just like nip.io or xip.io, traefik.me is a magic domain name that provides
 wildcard DNS for any IP address. Say your LAN IP address is <strong>10.0.0.1</strong>.
 Using traefik.me,
@@ -65,7 +59,7 @@ Using traefik.me,
 development web server from devices on your local network, like iPads, iPhones,
 and other computers. No configuration required!
 
-Alternatively, traefik works with dashes, and provide a default resolving to
+Alternatively, traefik works with dashes, and provides a default resolving to
 127.0.0.1, pretty handy in a local configuration:
 
                  <strong>10-0-0-1</strong>.traefik.me   resolves to   10.0.0.1
@@ -77,26 +71,32 @@ Alternatively, traefik works with dashes, and provide a default resolving to
 
 <section><pre>
 <strong>How does it work?</strong>
+
 traefik.me runs a <a href="https://github.com/exentriquesolutions/nip.io">custom DNS server</a> on the public Internet.
 When your computer looks up a traefik.me domain, the traefik.me DNS server
 extracts the IP address from the domain and sends it back in the response.
 </pre></section>
 
 <section><pre><strong>HTTPS support!</strong>
+
 Thanks to Let's encrypt, a wildcard certificate is available for *.traefik.me.
 Just grab the files here:
 
-           -rw-r--r-- 1 root root 1919 Oct 26 21:40 <a href="/cert.pem">cert.pem</a>
-           -rw-r--r-- 1 root root 1647 Oct 26 21:40 <a href="/chain.pem">chain.pem</a>
-           -rw-r--r-- 1 root root 3566 Oct 26 21:40 <a href="/fullchain.pem">fullchain.pem</a>
-           -rw-r--r-- 1 root root 1704 Oct 26 21:40 <a href="/privkey.pem">privkey.pem</a>
+           -rw-r--r-- 1 root root 1850 Jul 08 08:02 <a href="/cert.pem">cert.pem</a>
+           -rw-r--r-- 1 root root 3750 Jul 08 08:02 <a href="/chain.pem">chain.pem</a>
+           -rw-r--r-- 1 root root 5600 Jul 08 08:02 <a href="/fullchain.pem">fullchain.pem</a>
+           -rw-r--r-- 1 root root 1704 Jul 08 08:02 <a href="#" onclick="alert('I hope you are smart enough to imagine the URL of this file, and also to not revoke the certificate against Letsencrypt server.')">privkey.pem</a>
 
 As wildcard certificates are only valid for one level depth subdomains, use the
 dashed-form subdomain instead of dots. Certificates are regenerated every 60 days.
 </pre></<section>
-
 <section><pre>
+
+
+
+
 <strong>Ok but why "traefik"?</strong>
+
 The name comes from <a href="http://traefik.io">traefik.io</a>, that is an open-source reverse proxy and load
 balancer. Used in conjonction with docker, it becomes very handy for local web
 development. Here is a typical <strong>docker-compose.yml</strong> file you might produce:
@@ -131,17 +131,19 @@ following docker label :
 
 Say your LAN IP address is <strong>10.0.0.1</strong>, visiting http://app1.<strong>10.0.0.1</strong>.traefik.me
 from any device on your local network will reach your app1 docker container.
-</pre></section>
 
+For Docker Compose + HTTPS usage, checkout this sample <a href="https://gist.github.com/pyrou/4f555cd55677331c742742ee6007a73a">docker-compose.yml</a>.
 
+</pre>
 
+</section>
 <section><pre>
 <strong>Copyright</strong>
+
 Kudos to <a href="http://xip.io">xip.io</a> for the inspiration of the present website, <a href="http://nip.io">nip.io</a> for the dns
 server.
 
-
-                    Get in touch with me on <a href="//twitter.com/pyrou">twitter</a> or <a href="//github.com/pyrou">github</a>
+                Get in touch with me on twitter.com/<a href="//twitter.com/pyrou">@pyrou</a> or github.com/<a href="//github.com/pyrou">pyrou</a>.
 </pre>
 </section>
 <script>
