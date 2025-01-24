@@ -57,7 +57,7 @@ version: '3'
 services:
   traefik:
     restart: unless-stopped
-    image: traefik:v2.0.2
+    image: traefik:v3.3
     command: --providers.docker=true
     ports:
       - "80:80"
@@ -80,7 +80,7 @@ configuration or /etc/hosts tuning.
 To reach the container from another device on your local network, use the
 following docker label :
 
-    - "traefik.http.routers.app1.rule=HostRegexp(`app1.{ip:.*}.traefik.me`)"
+    - "traefik.http.routers.app1.rule=HostRegexp(`app1..*.traefik.me`)"
 
 Say your LAN IP address is 10.0.0.1, visiting http://app1.10.0.0.1.traefik.me
 from any device on your local network will reach your app1 docker container.
