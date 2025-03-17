@@ -80,7 +80,7 @@ configuration or /etc/hosts tuning.
 To reach the container from another device on your local network, use the
 following docker label :
 
-    - "traefik.http.routers.app1.rule=HostRegexp(`app1..*.traefik.me`)"
+    - "traefik.http.routers.app1.rule=HostRegexp(`app1\..*\.traefik\.me`)"
 
 Say your LAN IP address is 10.0.0.1, visiting http://app1.10.0.0.1.traefik.me
 from any device on your local network will reach your app1 docker container.
