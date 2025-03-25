@@ -42,12 +42,6 @@ traefik.me runs a custom DNS server on the public Internet.
 When your computer looks up a traefik.me domain, the traefik.me DNS server
 extracts the IP address from the domain and sends it back in the response.
 
-## HTTPS support!
-
-Thanks to Let's encrypt, a wildcard certificate is available for *.traefik.me.
-Just grab the files on traefik.me. As wildcard certificates are only valid for one level depth subdomains, use the
-dashed-form subdomain instead of dots. Certificates are regenerated every 60 days.
-
 ## Ok but why "traefik"?
 The name comes from [traefik.io](http://traefik.io), that is an open-source reverse proxy and load
 balancer. Used in conjonction with docker, it becomes very handy for local web
