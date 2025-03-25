@@ -77,24 +77,6 @@ When your computer looks up a traefik.me domain, the traefik.me DNS server
 extracts the IP address from the domain and sends it back in the response.
 </pre></section>
 
-<section><pre><strong>HTTPS support!</strong>
-
-Thanks to Let's encrypt, a wildcard certificate is available for *.traefik.me.
-Just grab the files here:
-
-           -rw-r--r-- 1 root root 1850 Mar 10 08:02 <a href="/cert.pem">cert.pem</a>
-           -rw-r--r-- 1 root root 3750 Mar 10 08:02 <a href="/chain.pem">chain.pem</a>
-           -rw-r--r-- 1 root root 5600 Mar 10 08:02 <a href="/fullchain.pem">fullchain.pem</a>
-           -rw-r--r-- 1 root root 1704 Mar 10 08:02 <a href="#" onclick="alert('I hope you are smart enough to imagine the URL of this file, and also to not revoke the certificate against Letsencrypt server.')">privkey.pem</a>
-
-As wildcard certificates are only valid for one level depth subdomains, use the
-dashed-form subdomain instead of dots. Certificates are regenerated every 60 days.
-</pre></<section>
-<section><pre>
-
-
-
-
 <strong>Ok but why "traefik"?</strong>
 
 The name comes from <a href="http://traefik.io">traefik.io</a>, that is an open-source reverse proxy and load
@@ -131,8 +113,6 @@ following docker label :
 
 Say your LAN IP address is <strong>10.0.0.1</strong>, visiting http://app1.<strong>10.0.0.1</strong>.traefik.me
 from any device on your local network will reach your app1 docker container.
-
-For Docker Compose + HTTPS usage, checkout this sample <a href="https://gist.github.com/pyrou/4f555cd55677331c742742ee6007a73a">docker-compose.yml</a>.
 
 </pre>
 
